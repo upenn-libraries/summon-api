@@ -1,3 +1,4 @@
 [submodule "node_modules/jquery"]
 	path = node_modules/jquery
 	url = https://github.com/jquery/jquery.git
+        ignore = dirty
