@@ -29,7 +29,7 @@ var SUMMON = (function () {
   };
 
   var defaultEscapeLucene = true;
-  var luceneEscapeRegex = /([-+&|!(){}[\]^"~*?:\\])/g;
+  var luceneEscapeRegex = /([-+&|!(){}[\]^"~*?:,\\])/g;
 
   var requestHeaders = {};
   var transport = undefined;
