@@ -1,3 +1,5 @@
+var clone = require('lodash.clone');
+
 var SUMMON = (function () {
   
   var commands = [];  
@@ -33,6 +35,7 @@ var SUMMON = (function () {
   var transport = undefined;
 
   var SESSION_HEADER_NAME = "x-summon-session-id";
+  var SUMMON_ROLE_AUTH_HEADER_NAME = "x-summon-role-auth";
 
   var setSessionId = function setSessionId(id) {
     if (id === null || id === undefined) {
@@ -42,7 +45,12 @@ var SUMMON = (function () {
     }
   };
 
-  var submit = function submit() {
+  var delegateSubmit = function delegateSubmit(fail, fun, instance) {
+    fun.call(instance, fail, ret.submit, ret);
+  }
+
+  var submit = function submit(fail, auth) {
+    //TODO cancel any pre-existing submit callbacks
     var len = commands.length;
     var url = "/2.0.0/search?";
     if (len > 0) {
@@ -51,7 +59,15 @@ var SUMMON = (function () {
         url += encodeURIComponent(commands[i]);
       }
     }
-    transport(url, done, fail, requestHeaders);
+    var headers;
+console.log("asldkfjkasdf"+JSON.stringify(auth));
+    if (auth === null || auth === undefined) {
+      headers = requestHeaders;
+    } else {
+      headers = clone(requestHeaders);
+      headers[SUMMON_ROLE_AUTH_HEADER_NAME] = auth.iv + ';' + auth.ciphertext;
+    }
+    transport(url, done, fail, headers);
   };
 
   var data = undefined;
@@ -82,12 +98,9 @@ var SUMMON = (function () {
     updateData(data);
   };
 
-  var fail = function fail() {
-    alert('failed');
-  };
-
   var ret = {
     submit: submit,
+    delegateSubmit: delegateSubmit,
     setTextQuery: function setTextQuery(queryString, escapeLuceneSyntax) {
       return addCommand('setTextQuery', queryString, escapeLuceneSyntax);
     },
@@ -120,7 +133,9 @@ SUMMON.setTransportFunction(function(url, done, fail, headers) {
     "dataType": "json"
   }).done(done).fail(function(jqXHR, textStatus, errorThrown) {
     console.log(errorThrown);
-    fail();
+    if (fail !== undefined) {
+      fail(errorThrown);
+    }
   });
 });
 
