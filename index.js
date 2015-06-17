@@ -124,6 +124,7 @@ console.log("asldkfjkasdf"+JSON.stringify(auth));
   return ret;
 })();
 
+/*
 var jQuery = require('jquery');
 
 SUMMON.setTransportFunction(function(url, done, fail, headers) {
@@ -138,6 +139,7 @@ SUMMON.setTransportFunction(function(url, done, fail, headers) {
     }
   });
 });
+*/
 
 module.exports = SUMMON;
 
