@@ -60,7 +60,6 @@ var SUMMON = (function () {
       }
     }
     var headers;
-console.log("asldkfjkasdf"+JSON.stringify(auth));
     if (auth === null || auth === undefined) {
       headers = requestHeaders;
     } else {
